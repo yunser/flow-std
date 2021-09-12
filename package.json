@@ -1,0 +1,46 @@
+{
+  "name": "@yunser/ui-std",
+  "version": "0.0.14",
+  "private": false,
+  "description": "UI standard specification.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Yunser",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yunser/json-ui"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node test.ts"
+  },
+  "dependencies": {
+    "color": "^4.0.1",
+    "htmlparser2": "^7.1.1",
+    "moment": "^2.29.1",
+    "parse-svg-path": "^0.1.2",
+    "pdfmake": "^0.2.2",
+    "serialize-svg-path": "^0.1.0",
+    "svg-path-bounding-box": "^1.0.4",
+    "translate-svg-path": "^0.0.1",
+    "uid": "^2.0.0",
+    "xml": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/color": "^3.0.2",
+    "@types/node": "^16.7.8",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.2"
+  },
+  "keywords": [
+    "UI",
+    "STD-UI",
+    "mind",
+    "minder",
+    "mindmap",
+    "KityMinder",
+    "FreeMind",
+    "ProcessOn"
+  ]
+}
