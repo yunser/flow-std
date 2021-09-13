@@ -1,10 +1,12 @@
 # flow-std
 
-* 项目目的：标准化流程图
-* 进度：0%
-
-
 Std Flow 用于统一流程图规范。和 Std UI 不同的是，Std Flow 并不追求全平台的 UI 一致性，更关注的是功能的一致性。
+
+* 项目目的：标准化流程图
+* 进度：20%
+* 已实现的功能
+    * 生成 .pos（ProcessOn）
+    * 生成 SVG
 
 构建 JSON 如下：
 
@@ -81,4 +83,11 @@ Std Flow 用于统一流程图规范。和 Std UI 不同的是，Std Flow 并不
 
 生成的图形如下：
 
-![](!/../demo.png)
+![](!/../demo@2x.png)
+
+play
+
+```shell
+npm i
+ts-node make.ts
+```
