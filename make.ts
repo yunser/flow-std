@@ -1,5 +1,18 @@
 import * as fs from 'fs'
 import { uid } from 'uid'
+import { StdUI } from '@yunser/ui-std'
+// let measure = requrie('font-measure')
+// import a from 'font-measure'
+
+const Point = {
+
+    center(fromPt, toPt) {
+        return {
+            x: (fromPt.x + toPt.x) / 2,
+            y: (fromPt.y + toPt.y) / 2,
+        }
+    }
+}
 
 function createStart(node) {
 
@@ -957,5 +970,260 @@ let out = {
         "version": "1.0"
     }
 }
+
+
+
 fs.writeFileSync('out/flow.pos', JSON.stringify(out, null, 4), 'utf8')
 
+
+// fs.writeFileSync('out/flow.svg', JSON.stringify(out, null, 4), 'utf8')
+
+
+
+
+function toSvg() {
+    let _children: any[] = []
+
+    function handleText(node) {
+        _children.push({
+            _type: 'text',
+            x: node.x + node.width / 2,
+            y: node.y + node.height / 2,
+            width: node.width,
+            height: node.height,
+            color: '#000',
+            text: node._text,
+            textSize: 14,
+            centerd: true,
+        })
+    }
+    
+    root._children.map((node: any) => {
+        if (node._type == NodeType.Start) {
+            _children.push({
+                _type: 'rect',
+                x: node.x,
+                y: node.y,
+                width: node.width,
+                height: node.height,
+                color: '#fff',
+                border: {
+                    color: '#000',
+                },
+                radius: 32,
+            })
+            handleText(node)
+            // return createStart(node)
+        }
+        if (node._type == NodeType.End) {
+            // return createStart(node)
+            _children.push({
+                _type: 'rect',
+                x: node.x,
+                y: node.y,
+                width: node.width,
+                height: node.height,
+                color: '#fff',
+                border: {
+                    color: '#000',
+                },
+                radius: 32,
+            })
+            handleText(node)
+        }
+        if (node._type == NodeType.Op) {
+            // return createOp(node)
+            _children.push({
+                _type: 'rect',
+                x: node.x,
+                y: node.y,
+                width: node.width,
+                height: node.height,
+                color: '#fff',
+                border: {
+                    color: '#000',
+                },
+                radius: 4,
+            })
+            handleText(node)
+        }
+        if (node._type == NodeType.Condition) {
+            // return createCondition(node)
+            _children.push({
+                _type: 'polygon',
+                points: [
+                    // left
+                    {
+                        x: node.x,
+                        y: node.y + node.height / 2,
+                    },
+                    // top
+                    {
+                        x: node.x + node.width / 2,
+                        y: node.y,
+                    },
+                    // right
+                    {
+                        x: node.x + node.width,
+                        y: node.y + node.height / 2,
+                    },
+                    // bottom
+                    {
+                        x: node.x + node.width / 2,
+                        y: node.y + node.height,
+                    },
+                ],
+                // x: node.x,
+                // y: node.y,
+                // width: node.width,
+                // height: node.height,
+                color: '#fff',
+                border: {
+                    color: '#000',
+                },
+                radius: 8,
+            })
+            handleText(node)
+        }
+        if (node._type == NodeType.Linker) {
+            let fromNode: any = root._children.find(item => item.id == node.from.id)
+            let toNode: any = root._children.find(item => item.id == node.to.id)
+            let fromPt = {
+                "x": fromNode.x + fromNode.width * (node.from.x || 0),
+                "y": fromNode.y + fromNode.height * (node.from.y || 0),
+            }
+            let toPt = {
+                "x": toNode.x + toNode.width * (node.to.x || 0),
+                "y": toNode.y + toNode.height * (node.to.y || 0),
+            }
+            function drawLineArrow(fromX, fromY, toX, toY) {
+                var headlen = 10;//自定义箭头线的长度
+                var theta = 45;//自定义箭头线与直线的夹角，个人觉得45°刚刚好
+                var arrowX, arrowY;//箭头线终点坐标
+                // 计算各角度和对应的箭头终点坐标
+                var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI;
+                var angle1 = (angle + theta) * Math.PI / 180;
+                var angle2 = (angle - theta) * Math.PI / 180;
+                var topX = headlen * Math.cos(angle1);
+                var topY = headlen * Math.sin(angle1);
+                var botX = headlen * Math.cos(angle2);
+                var botY = headlen * Math.sin(angle2);
+
+                _children.push({
+                    _type: 'line',
+                    x1: fromPt.x,
+                    y1: fromPt.y,
+                    x2: toPt.x,
+                    y2: toPt.y,
+                })
+                // cavParam.ctx.beginPath();
+                // //画直线
+                // cavParam.ctx.moveTo(fromX, fromY);
+                // cavParam.ctx.lineTo(toX, toY);
+
+                arrowX = toX + topX;
+                arrowY = toY + topY;
+                //画上边箭头线
+                _children.push({
+                    _type: 'line',
+                    x1: arrowX,
+                    y1: arrowY,
+                    x2: toPt.x,
+                    y2: toPt.y,
+                })
+                // cavParam.ctx.moveTo(arrowX, arrowY);
+                // cavParam.ctx.lineTo(toX, toY);
+
+                arrowX = toX + botX;
+                arrowY = toY + botY;
+                //画下边箭头线
+                _children.push({
+                    _type: 'line',
+                    x1: arrowX,
+                    y1: arrowY,
+                    x2: toPt.x,
+                    y2: toPt.y,
+                })
+                // cavParam.ctx.lineTo(arrowX, arrowY);
+
+                // cavParam.ctx.strokeStyle = color;
+                // cavParam.ctx.stroke();
+            }
+            drawLineArrow(fromPt.x, fromPt.y, toPt.x, toPt.y)
+
+
+            if (node._text) {
+                let textPt = Point.center(fromPt, toPt)
+                // _children.push({
+                //     _type: 'rect',
+                //     // ...textPt,
+                //     // x: textPt.x - 
+                //     // x: (fromPt.x + toPt.x) / 2,
+                //     // y: (fromPt.y + toPt.y) / 2,
+                //     width: node.width,
+                //     height: node.height,
+                //     color: '#000',
+                //     text: node._text,
+                //     textSize: 14,
+                //     centerd: true,
+                // })
+                _children.push({
+                    _type: 'text',
+                    ...textPt,
+                    // x: (fromPt.x + toPt.x) / 2,
+                    // y: (fromPt.y + toPt.y) / 2,
+                    width: node.width,
+                    height: node.height,
+                    color: '#000',
+                    text: node._text,
+                    textSize: 14,
+                    centerd: true,
+                })
+            }
+            
+            // return createLinker(node)
+            // _children.push({
+            //     _type: 'rect',
+            //     x: node.x,
+            //     y: node.y,
+            //     width: node.width,
+            //     height: node.height,
+            //     color: '#fff',
+            //     border: {
+            //         color: '#000',
+            //     },
+            //     radius: 8,
+            // })
+        }
+    })
+    const json = {
+        "_type": "root",
+        "width": root.width,
+        "height": root.height,
+        "color": "#f1f1f1",
+        _children,
+        // "_children": [
+        //     {
+        //         "_type": "rect",
+        //         "x": 100,
+        //         "y": 100,
+        //         "width": 100,
+        //         "height": 100,
+        //         "color": "#f00",
+        //     }
+        // ]
+    }
+    const stdUi = new StdUI({
+        root: json,
+    })
+    return stdUi.toSvg()
+}
+
+// console.log(stdUi.toSvg())
+fs.writeFileSync('out/flow.svg', toSvg(), 'utf-8')
+
+
+
+
+// console.log('mm', measure('Roboto'))
+// console.log('a', a)

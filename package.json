@@ -16,6 +16,7 @@
     "test": "ts-node test.ts"
   },
   "dependencies": {
+    "@yunser/ui-std": "^0.0.15",
     "color": "^4.0.1",
     "htmlparser2": "^7.1.1",
     "moment": "^2.29.1",
